@@ -9,6 +9,9 @@ class Repository():
 
 
     def __init__(self, root_dir:str) -> None:
+        """
+            Manager of all information and data relating to the organization of files. This includes the data itself, it's location, and how data is handled in operations.
+        """
 
         #the size of which chunks are created (default 32MB)
         self.read_size = (1024*1024*32)
@@ -23,8 +26,9 @@ class Repository():
         self.manifest_src = os.path.join(self.root, config.MANIFEST_SRC)
 
         #used to not overwrite the existing manifest data
-        with open(self.manifest_src, "w") as manifest:
-            json.dump(config.MANIFEST_DEFAULTS, manifest)
+        if not os.path.exists(self.manifest_src):
+            with open(self.manifest_src, "w") as manifest:
+                json.dump(config.MANIFEST_DEFAULTS, manifest)
 
     
     def set_read_size(self, size:int) -> None:
