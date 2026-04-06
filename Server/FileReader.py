@@ -1,6 +1,7 @@
 import hashlib
 import json
 import os
+import pathlib
 
 from . import config
 
@@ -13,36 +14,42 @@ def get_chunk_id(data:bytes, length:int=8) -> str:
 def chop_file(file_src:str, data_dir:str, manifest_src:str, read_size:int, id_length:int=8) -> None:
     """Reads the file at the given path and creates data chunks based on it."""
 
-    #holds chunk id and chunk data. We use a dict in order
-    #to easily compare the previous and new chunks without having to read
-    #or write multiple times.
-    chunks = {
+    #clearing the entire data folder
+    folder = pathlib.Path(data_dir)
+    for file in folder.iterdir():
+        if file.is_file():
+            file.unlink()
 
-    }
+    new_chunk_order = []
 
-    with open(file_src, "rb") as to_read:
-        #iterating each chunk of data and creating new chunk
-        while chunk := to_read.read(read_size):
+    #opening where to read from and where to write to
+    with (open(file_src, "rb") as file):
+        
+        #iterating through the entire file given
+        while chunk := file.read(read_size):
+            
+            #getting a hashed id for the chunk
             chunk_id = get_chunk_id(chunk, id_length)
-            chunks[chunk_id] = chunk
+            #for the manifest.json and reading data in order
+            new_chunk_order.append(chunk_id)
 
-    #checks to see if we need to purge the data directory
-    data_list = os.listdir(data_dir)
-    if len(chunks) != len(data_list):
-        #purge. it. all.
-        for file in data_list:
-            os.remove(os.path.)
+            #creating the new file for the chunk
+            with open(os.path.join(data_dir, chunk_id), "wb") as chunk_file:
+                chunk_file.write(chunk)
 
-    #opening manifest to read the metadata. We open it here so we can compare the old data to the new reads
+    #getting old manifest data
     with open(manifest_src, "r") as manifest:
         manifest_data = json.load(manifest)
 
-    #updating metadata chunk order
-    manifest_data[config.CHUNK_ORDER_KEY] = chunks
+    #setting the new chunk order
+    manifest_data[config.CHUNK_ORDER_KEY] = new_chunk_order
 
-    #opening manifest to write the updated metadata
+    #directly updating the new chunk order
     with open(manifest_src, "w") as manifest:
         json.dump(manifest_data, manifest, indent=config.MANIFEST_INDENT)
+
+
+        
 
     
 

@@ -25,10 +25,9 @@ class Repository():
         #manifest file for metadata
         self.manifest_src = os.path.join(self.root, config.MANIFEST_SRC)
 
-        #used to not overwrite the existing manifest data
-        if not os.path.exists(self.manifest_src):
-            with open(self.manifest_src, "w") as manifest:
-                json.dump(config.MANIFEST_DEFAULTS, manifest)
+
+        with open(self.manifest_src, "w") as manifest:
+            json.dump(config.MANIFEST_DEFAULTS, manifest)
 
     
     def set_read_size(self, size:int) -> None:

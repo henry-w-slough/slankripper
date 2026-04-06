@@ -5,7 +5,6 @@ MANIFEST_SRC = "manifest.json"
 MANIFEST_INDENT = 2
 
 CHUNK_ORDER_KEY = "chunk_order"
-NAME_KEY = "name"
 
 MANIFEST_DEFAULTS = {
     CHUNK_ORDER_KEY: [],
