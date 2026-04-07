@@ -37,6 +37,6 @@ class Repository():
 
     def add_file(self, src:str) -> None:
         """Converts the given file into chunks of hashed data in the Repository's data folder."""
-        FileReader.chop_file(src, self.data_dir, self.manifest_src, self.read_size)
+        FileReader.chop_file(self.root, src, self.read_size)
 
     
