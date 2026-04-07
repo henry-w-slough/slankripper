@@ -1,5 +1,5 @@
 
-DATA_SRC = "data"
+DATA_DIR = "data"
 
 MANIFEST_SRC = "manifest.json"
 MANIFEST_INDENT = 2

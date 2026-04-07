@@ -9,26 +9,26 @@ class Repository():
 
 
     def __init__(self, root_dir:str) -> None:
-        """
-            Manager of all information and data relating to the organization of files. This includes the data itself, it's location, and how data is handled in operations.
-        """
+        """Manager of all information and data relating to the organization of files. This includes the data itself, it's location, and how data is handled in operations."""
+
+        self.root_dir= root_dir
 
         #the size of which chunks are created (default 32MB)
         self.read_size = (1024*1024*32)
-        
-        self.root = root_dir
 
-        #data directory folder
-        self.data_dir = os.path.join(self.root, config.DATA_SRC)
-        os.makedirs(self.data_dir, exist_ok=True)
+        #creating the repo folder
+        os.makedirs(self.root_dir, exist_ok=True)
+        #creating data folder
+        os.makedirs(os.path.join(self.root_dir, config.DATA_DIR), exist_ok=True)
 
-        #manifest file for metadata
-        self.manifest_src = os.path.join(self.root, config.MANIFEST_SRC)
-
-        with open(self.manifest_src, "w") as manifest:
+        #creating the manifest file
+        with open(os.path.join(self.root_dir, config.MANIFEST_SRC), "w") as manifest:
+            #writing default manifest values
             json.dump(config.MANIFEST_DEFAULTS, manifest)
 
+        
     
+
     def set_read_size(self, size:int) -> None:
         """Sets the size in megabytes at which file chunks will be created."""
         #NOTE: May want to change this for more versatility of chunk data size
@@ -36,7 +36,7 @@ class Repository():
 
 
     def add_file(self, src:str) -> None:
-        """Converts the given file into chunks of hashed data in the Repository's data folder."""
-        FileReader.chop_file(self.root, src, self.read_size)
+        """Takes a given file and converts it into seperate data files within the Repositories data directory."""
+        FileReader.file_to_chunks(self.root_dir, src, self.read_size)
 
     
