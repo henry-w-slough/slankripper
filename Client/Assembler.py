@@ -1,15 +1,16 @@
 from . import FileReader
 
 import os
+import uuid
 
 
-class Client():
+class Assembler():
 
 
     def __init__(self) -> None:
         """Manager of finding, copying, and handling Repository data."""
-        #there will be other functionality relating to clients needing class vars
-        pass
+
+        self.id = uuid.uuid4()
 
 
     def copy_repository_data(self, repository_dir:str, new_dir:str) -> None:

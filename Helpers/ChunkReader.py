@@ -1,3 +1,4 @@
+
 import os
 import json
 
@@ -23,10 +24,3 @@ def copy_repository_data(repository_dir:str, new_dir:str) -> None:
         for chunk in chunk_order:
             with open(os.path.join(repository_dir, config.DATA_DIR, chunk), "rb") as chunk_file:
                 new_file.write(chunk_file.read())
-
-    
-
-
-
-    
-        
