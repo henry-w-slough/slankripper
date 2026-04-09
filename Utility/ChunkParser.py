@@ -13,7 +13,7 @@ def get_chunk_id(data:bytes, length:int=8) -> str:
 
 
 def file_to_chunks(movie:Movie.Movie, file_src:str, read_size:int, id_length:int=8) -> None:
-    """Reads the file at the given path and creates data chunks based on it."""
+    """Takes a file and breaks it into data chunks which are placed in a given directory. Chunks are named with hash convention."""
 
     #making the root file for the movie
     movie_dir = os.path.join(config.MOVIES_DIR, movie.name)
