@@ -9,8 +9,8 @@ class MovieService:
         self.movie_repository = MovieRepository.MovieRepository()
 
 
-    def add_movie(self, id:str, name:str) -> None:
+    def add_movie(self, id:str, name:str, src:str) -> None:
         """Adds a movie to the Service's repository with the given characteristics."""
         new_movie = Movie.Movie(id, name)
-        self.movie_repository.add_movie(new_movie)        
+        self.movie_repository.add_movie(new_movie, src)        
 

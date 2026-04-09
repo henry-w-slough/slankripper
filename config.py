@@ -1,13 +1,5 @@
 
-DATA_DIR = "data"
+MOVIES_DIR= "Movies"
+MOVIE_DATA_DIR = "data"
 
-MANIFEST_SRC = "manifest.json"
-MANIFEST_INDENT = 2
-
-CHUNK_ORDER_KEY = "chunk_order"
-MOVIE_NAME_KEY = "movie_name"
-
-MANIFEST_DEFAULTS = {
-    CHUNK_ORDER_KEY: [],
-    MOVIE_NAME_KEY: "Null"
-}
+DEFAULT_READ_SIZE = (1024*1024 * 32)

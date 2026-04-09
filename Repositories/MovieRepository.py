@@ -1,5 +1,9 @@
 from ..Models import Movie
-from ..Utility import ChunkParser, ChunkReader
+
+from ..Utility import ChunkParser
+from ..Utility import ChunkCombiner
+
+from .. import config
 
 class MovieRepository:
 
@@ -12,8 +16,10 @@ class MovieRepository:
         }
 
 
-    def add_movie(self, movie:Movie.Movie) -> None:
+    def add_movie(self, movie:Movie.Movie, src:str) -> None:
         """Adds a new movie to the Repository movie dict with the given attributes"""
-        self.all_movies[movie.id] = movie
+        self.all_movies[movie.id] = movie   
+        ChunkParser.file_to_chunks(movie, src, config.DEFAULT_READ_SIZE)
 
-        print(self.all_movies)
+
+        

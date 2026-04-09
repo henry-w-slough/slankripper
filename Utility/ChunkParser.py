@@ -4,6 +4,7 @@ import os
 import pathlib
 
 from .. import config
+from ..Models import Movie
 
 
 def get_chunk_id(data:bytes, length:int=8) -> str:
@@ -11,43 +12,38 @@ def get_chunk_id(data:bytes, length:int=8) -> str:
     return hashlib.sha256(data).hexdigest()[:length]
 
 
-def file_to_chunks(repository_dir:str, file_src:str, read_size:int, id_length:int=8) -> None:
+def file_to_chunks(movie:Movie.Movie, file_src:str, read_size:int, id_length:int=8) -> None:
     """Reads the file at the given path and creates data chunks based on it."""
 
-    #clearing the entire data folder
-    folder = pathlib.Path(os.path.join(repository_dir, config.DATA_DIR))
-    for file in folder.iterdir():
-        if file.is_file():
-            file.unlink()
+    #making the root file for the movie
+    movie_dir = os.path.join(config.MOVIES_DIR, movie.name)
+    os.makedirs(movie_dir, exist_ok=True)
+    #creating the data folder for chunks
+    os.makedirs(os.path.join(movie_dir, config.MOVIE_DATA_DIR), exist_ok=True)
 
-    new_chunk_order = []
+    with open(file_src, "rb") as file:
 
-    #opening where to read
-    with open(os.path.join(file_src), "rb") as file:
-        
-        #iterating through the entire file given
         while chunk := file.read(read_size):
-            #getting a hashed id for the chunk
+
             chunk_id = get_chunk_id(chunk, id_length)
-            #for the manifest.json and reading data in order
-            new_chunk_order.append(chunk_id)
+            #adding id to the order of chunks in Movie object
+            movie.chunk_order.append(chunk_id)
 
-            #creating the new file for the chunk
-            with open(os.path.join(os.path.join(repository_dir, config.DATA_DIR), chunk_id), "wb") as chunk_file:
-                chunk_file.write(chunk)
+            #writing chunk data to the movie's data dir
+            with open(os.path.join(movie_dir, config.MOVIE_DATA_DIR, chunk_id), "wb") as chunk_src:
+                chunk_src.write(chunk)
+
+            
 
 
-    #getting old manifest data
-    with open(os.path.join(repository_dir, config.MANIFEST_SRC), "r") as manifest:
-        manifest_data = json.load(manifest)
 
-    #setting the new chunk order
-    manifest_data[config.CHUNK_ORDER_KEY] = new_chunk_order
-    manifest_data[config.MOVIE_NAME_KEY] = file_src
 
-    #directly updating the new chunk order
-    with open(os.path.join(repository_dir, config.MANIFEST_SRC), "w") as manifest:
-        json.dump(manifest_data, manifest, indent=config.MANIFEST_INDENT)
+
+
+
+            
+
+    
 
 
         

@@ -8,5 +8,9 @@ class MovieController:
         self.movie_service = MovieService.MovieService()
 
 
-    def add_movie(self, id:str, name:str) -> None:
-        self.movie_service.add_movie(id, name)
+    def add_movie(self, id:str, name:str, src:str) -> None:
+        self.movie_service.add_movie(id, name, src)
+
+
+
+
