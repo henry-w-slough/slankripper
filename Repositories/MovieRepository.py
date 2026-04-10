@@ -5,6 +5,8 @@ from ..Utility import ChunkCombiner
 
 from .. import config
 
+import os
+
 class MovieRepository:
 
 
@@ -18,20 +20,36 @@ class MovieRepository:
 
     def add_movie(self, movie:Movie.Movie, src:str) -> None:
         """Adds a new movie to the Repository movie dict with the given attributes"""
-        self.all_movies[movie.id] = movie   
+        self.all_movies[os.path.join(config.MOVIES_DIR, movie.name, config.MOVIE_DATA_DIR)] = movie   
         ChunkParser.file_to_chunks(movie, src, config.DEFAULT_READ_SIZE)
 
 
     def get_movie_by_id(self, id:str) -> Movie.Movie:
         return self.all_movies[id]
+        #fallback with invalid movie id
+        print(f"WARNING: MovieRepository: get_movie_by_id: No movie of id '{id}' was found.")
+        return Movie.Movie(-1, "")
 
 
     def get_movie_by_name(self, name:str) -> Movie.Movie:
         for movie in self.all_movies.values():
             if movie.name == name:
                 return movie
-        print("WARNING: MovieRepository: get_movie_by_name: No movie of name {name} was found.")
+
+        #fallback with invalid movie name
         return Movie.Movie(-1, "")
+
+
+    def get_movie_directory(self, movie:Movie.Movie) -> str:
+        for dir, m in self.all_movies.items():
+            if movie == m:
+                return dir
+
+
+    def copy_movie(self, movie:Movie.Movie, new_dir:str) -> None:
+
+        ChunkCombiner.chunks_to_file(self.get_movie_directory(movie), new_dir)
+        
    
 
 

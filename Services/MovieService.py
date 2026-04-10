@@ -22,3 +22,8 @@ class MovieService:
     def get_movie_by_name(self, name:str) -> Movie.Movie:
         return self.movie_repository.get_movie_by_name(name)
 
+
+    def copy_movie(self, movie:Movie.Movie, new_dir:str) -> None:
+        self.movie_repository.copy_movie(movie, new_dir)
+        
+
