@@ -1,7 +1,6 @@
 import hashlib
-import json
+import ffmpeg
 import os
-import pathlib
 
 from .. import config
 from ..Models import Movie
@@ -21,9 +20,13 @@ def file_to_chunks(movie:Movie.Movie, file_src:str, read_size:int, id_length:int
     #creating the data folder for chunks
     os.makedirs(os.path.join(movie_dir, config.MOVIE_DATA_DIR), exist_ok=True)
 
-    with open(file_src, "rb") as file:
+    (
+        ffmpeg
+        .input(file_src)
+        .output(file_src, vcodec=config.TRANSCODE_DEFAULT_VCODEC, acodec=config.TRANSCODE_DEFAULT_ACODEC)
+    )
 
-        while chunk := file.read(read_size):
+    with open(file_src, "rb") as file:
 
             chunk_id = get_chunk_id(chunk, id_length)
             #adding id to the order of chunks in Movie object

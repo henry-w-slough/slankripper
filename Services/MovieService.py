@@ -1,6 +1,10 @@
 from ..Repositories import MovieRepository
 from ..Models import Movie
 from ..Exceptions import movie_exceptions
+from ..Utility import ChunkCombiner 
+from .. import config
+import os
+
 
 class MovieService:
 
@@ -33,6 +37,13 @@ class MovieService:
 
 
     def copy_movie(self, movie:Movie.Movie, new_dir:str) -> None:
-        self.movie_repository.copy_movie(movie, new_dir)
-        
+        """Copies the given Movie's data into another directory."""
+        movie_dir = self.movie_repository.get_movie_directory(movie)
+        if movie_dir:
+            chunks_dir = os.path.join(movie_dir, config.MOVIE_DATA_DIR)
+            ChunkCombiner.chunks_to_file(movie, chunks_dir, new_dir)
+
+
+
+
 
