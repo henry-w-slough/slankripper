@@ -1,6 +1,7 @@
 import hashlib
 import ffmpeg
 import os
+import tempfile
 
 from .. import config
 from ..Models import Movie
@@ -11,7 +12,7 @@ def get_chunk_id(data:bytes, length:int=8) -> str:
     return hashlib.sha256(data).hexdigest()[:length]
 
 
-def file_to_chunks(movie:Movie.Movie, file_src:str, read_size:int, id_length:int=8) -> None:
+def file_to_chunks(movie:Movie.Movie, file_src:str, id_length:int=8) -> None:
     """Takes a file and breaks it into data chunks which are placed in a given directory. Chunks are named with hash convention."""
 
     #making the root file for the movie
@@ -20,21 +21,24 @@ def file_to_chunks(movie:Movie.Movie, file_src:str, read_size:int, id_length:int
     #creating the data folder for chunks
     os.makedirs(os.path.join(movie_dir, config.MOVIE_DATA_DIR), exist_ok=True)
 
-    (
-        ffmpeg
-        .input(file_src)
-        .output(file_src, vcodec=config.TRANSCODE_DEFAULT_VCODEC, acodec=config.TRANSCODE_DEFAULT_ACODEC)
-    )
 
-    with open(file_src, "rb") as file:
+    #temporary src for
+    with tempfile.TemporaryDirectory() as tmp_file_dir:
 
-            chunk_id = get_chunk_id(chunk, id_length)
-            #adding id to the order of chunks in Movie object
-            movie.chunk_order.append(chunk_id)
+        transcoded_path = os.path.join(tmp_file_dir, "transcoded.mp4")
+        ffmpeg.input(file_src).output(transcoded_path, ).run()
 
-            #writing chunk data to the movie's data dir
-            with open(os.path.join(movie_dir, config.MOVIE_DATA_DIR, chunk_id), "wb") as chunk_src:
-                chunk_src.write(chunk)
+        with open(file_src, "rb") as file:
+            
+            while chunk := file.read(config.DEFAULT_READ_SIZE):
+                
+                chunk_id = get_chunk_id(chunk, id_length)
+                #adding id to the order of chunks in Movie object
+                movie.chunk_order.append(chunk_id)
+
+                #writing chunk data to the movie's data dir
+                with open(os.path.join(movie_dir, config.MOVIE_DATA_DIR, chunk_id), "wb") as chunk_src:
+                    chunk_src.write(chunk)
 
             
 

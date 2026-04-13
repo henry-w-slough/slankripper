@@ -2,6 +2,7 @@ from ..Repositories import MovieRepository
 from ..Models import Movie
 from ..Exceptions import movie_exceptions
 from ..Utility import ChunkCombiner 
+from ..Utility import ChunkParser
 from .. import config
 import os
 
@@ -18,6 +19,7 @@ class MovieService:
         """Adds a movie to the Service's repository with the given characteristics."""
         new_movie = Movie.Movie(id, name)
         self.movie_repository.add_movie(new_movie, src)   
+        ChunkParser.file_to_chunks(new_movie, src, config.DEFAULT_READ_SIZE)
 
    
     def get_movie_by_id(self, id:str) -> Movie.Movie:

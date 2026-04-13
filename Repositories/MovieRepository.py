@@ -32,7 +32,6 @@ class MovieRepository:
     def add_movie(self, movie:Movie.Movie, src:str) -> None:
         """Adds a new movie to the Repository movie dict with the given attributes"""
         self.all_movies[os.path.join(config.MOVIES_DIR, movie.name)] = movie   
-        ChunkParser.file_to_chunks(movie, src, config.DEFAULT_READ_SIZE)
 
 
     def get_movie_by_id(self, id:str) -> Movie.Movie | None:
