@@ -25,8 +25,8 @@ def file_to_chunks(movie:Movie.Movie, file_src:str, id_length:int=8) -> None:
     #temporary src for
     with tempfile.TemporaryDirectory() as tmp_file_dir:
 
-        transcoded_path = os.path.join(tmp_file_dir, "transcoded.mp4")
-        ffmpeg.input(file_src).output(transcoded_path, ).run()
+        transcoded_file_src = os.path.join(tmp_file_dir, f"transcoded.{config.DEFAULT_MOVIE_EXTENSION}")
+        ffmpeg.input(file_src).output(transcoded_file_src, vcodec=config.TRANSCODE_DEFAULT_VCODEC, acodec=config.TRANSCODE_DEFAULT_ACODEC).run()
 
         with open(file_src, "rb") as file:
             
